@@ -1,0 +1,7 @@
+:root {
+  --file-bg: #ecf0f1;
+  --border-bg: #34495e;
+}
+
+@import "./mobile_field.css" (max-width: 760px);
+@import "./desktop_field.css" (min-width: 761px);
