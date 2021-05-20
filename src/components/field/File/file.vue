@@ -1,39 +1,38 @@
 <template>
   <div class="field-form" v-if="mode == 'form'">
-    <div class="label-field">{{ label }}</div>
+    <div class="label-field">
+      <label>{{ label }}</label>
+    </div>
     <div class="input-field">
       <div
-        id="files-input"
-        v-this="teste"
-        v-drag:content="onDrag"
         class="files"
+        v-this="(el) => setElement(el, 'files')"
+        v-drag:content="onDrag"
         div-placeholder="Choose a file or drag it here"
       >
-        <!-- @drag=""
-        @dragenter="dragEnterFile"
-        @drop="dropEnterFile"
-        @click="inputClick" -->
         <div 
           class="file"
           v-for="(file, index) in _value_"
           :key="index"
         >
           <div>
-            <img :src="file.data.src" :alt="file.name">
+            <img class="file-upload" :src="file.data.src" :alt="file.name">
           </div>
           <div>
-            <div>{{ file.name }}</div>
-            <div>{{ file.size.src.b }}</div>
+            <div class="info">
+              <div class="name">{{ file.name }}</div>
+              <div class="size">{{ file.size.src.b }}</div>
+            </div>
           </div>
           <div>
-            <img :src="$app.data.base64.close.data" :alt="$app.data.base64.close.name" @click="(event) => remove(event, index)">
+            <img class="close" :src="$app.data.base64.close.data" :alt="$app.data.base64.close.name" @click="(event) => remove(event, index)">
           </div>
         </div>
       </div>
       <input
+        v-this="(el) => setElement(el, 'input')"
         v-show="false"
-        :id="input.id"
-        @change="(event) => change(event)"
+        @change="(event) => setFilesAsync(event)"
         type="file"
         :multiple="_shared_.multiple"
         :accept="_shared_.accept"

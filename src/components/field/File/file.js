@@ -20,17 +20,10 @@ export default {
         multiple: false,
         accept: '*'
       },
-      input: {
-        id: '',
-        el: null
-      }
+      input: null
     }
   },
   methods: {
-    teste(...args) {
-      console.log(args)
-    },
-
     onDrag({ event, type }) {
       switch (type) {
         case 'drag-over':
@@ -40,24 +33,18 @@ export default {
         case 'drag-leave': 
         default: break;
       }
-        // console.log(type)
-      // switch (type) {
-      //   case 'drag':
-      //     event.dataTransfer.setData('item-drag', event.target.id)
-      //     return
-      //   default:
-      //     break;
-      // }
+    },
+
+    setElement(el, name) {
+      switch (name) {
+        case 'input': break;
+        case 'files': break;
+        default: console.warn(`setElement: don\'t defined name ${name}`); break;
+      }
     },
 
     load() {
-      this.input.id = this.$app.bufferToBase64(
-        this.$app.stringToBuffer(
-          this.$app.randomString(40, { useNumber: true, useSuper: true })
-        )
-      )
-
-      // this.setValue()
+      this.setValue()
       let { multiple, accept } = this.shared || {}
       this._shared_ = {
         multiple: multiple || true,
@@ -90,7 +77,7 @@ export default {
 
     },
 
-    async change(event = new Event()) {
+    async setFilesAsync(event = new Event()) {
       let files  = event.target.files
       if (files === null) { return }      
       let fileReader = this.$app.fileReader()
