@@ -23,10 +23,7 @@ export default {
       },
       configuration: {
         shared: [
-          // { propertie: 'type', init: 'text', required: true },
-          // { propertie: 'min', init: 0, required: false },
-          // { propertie: 'max', init: 250, required: false },
-          { propertie: 'maxLength', init: 400, required: false },
+          { propertie: 'maxLength', init: 120, required: true },
         ],
         types: {
           init: 'text',

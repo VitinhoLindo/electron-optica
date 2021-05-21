@@ -1,5 +1,7 @@
 <template>
   <div>
+    <modal-page />
+
     <component 
       v-for="(field, index) in fields"
       :key="index"

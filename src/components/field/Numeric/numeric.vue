@@ -5,7 +5,7 @@
     </div>
 
     <div class="input-field" v-if="mode == 'form'">
-      <div class="text-picker">
+      <div class="number-picker">
         <div>
           <input 
             v-this="(el) => setElement(el, 'input')"

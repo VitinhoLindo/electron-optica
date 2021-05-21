@@ -1,4 +1,7 @@
-export default {
+import Base from './base'
+
+export default Object.assign({
+  mixins: [],
   props: {
     mode: {
       type: String,
@@ -12,13 +15,5 @@ export default {
       type: Function,
       required: true
     }
-  },
-  created() {
-    if (typeof this.get === 'function')  this.getter(this.get)
-    if (typeof this.load === 'function') this.load()
-    if (typeof this.set === 'function')  this.set()
-  },
-  mounted() {
-    if (typeof this.build === 'function') this.build()
   }
-}
+}, Base)

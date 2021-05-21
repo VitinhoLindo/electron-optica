@@ -1,7 +1,7 @@
 import FieldMixin from '../../mixins/js/field_mixin'
 
 export default {
-  name: 'text-field',
+  name: 'numeric-field',
   mixins: [FieldMixin],
   props: {
     value: {
