@@ -1,20 +1,26 @@
 <template>
-  <div class="field-division" v-if="mode == 'form'">
-    <!-- <div class="label-text-field">{{ label }}</div>
-    <div class="input-text-field">
-      <div>
-        <input v-model="_value_" :type="_type_">
-      </div>
-      <div>
+  <div class="field-form">
+    <div class="label-field">
+      <label>{{ label }}</label>
+    </div>
 
+    <div class="input-field" v-if="mode == 'form'">
+      <div class="text-picker">
+        <div>
+          <input 
+            v-this="(el) => setElement(el, 'input')"
+            :type="type"
+            v-model="input.value"
+          >
+        </div>
       </div>
-    </div> -->
-  </div>
+    </div>
 
-  <div class="field-division" v-else>
-    <!-- <input type="text"> -->
+    <div class="input-field" v-else>
+      <div class="input-value">{{ value }}</div>
+    </div>
   </div>
 </template>
 
 <script lang="js" src="./numeric.js"></script>
-<style lang="css" src="./numeric.css"></style>
+<style lang="css" src="./numeric.css" scoped></style>

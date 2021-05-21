@@ -1,3 +1,5 @@
+import Properties from './Properties'
+
 class ListenProps {
   constructor() {
     this.listen = {}

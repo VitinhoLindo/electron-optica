@@ -1,106 +1,64 @@
 @import "../../mixins/css/basefield.css";
 
 .input-field {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} .input-field > .input {
+  width: calc(100% - 20px);
+  height: 40px;
   background-color: #ecf0f1;
-  border-radius: 3px;
-  
+  padding: 0px 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.input-field > .files {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: space-evenly;
-
-  height: calc(85% - 10px);
-  width: calc(98% - 10px);
-  overflow-y: auto;
-}
-
-.input-field > .files > .file {
-  background-color: #95a5a6;
   border-radius: 5px;
-  height: 55px;
-  margin-bottom: 5px;
-  width: 150px;
-  
+} .input-field > .input > .files {
+  width: calc(100% - 25px);
+  height: 35px;
+  overflow-x: auto;
+  overflow-y: hidden;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 5px 15px;
-}
-
-.input-field > .files > .file > div {
-  min-width: 50px;
-
+} .input-field > .input > .files > .file {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.input-field > .files > .file > div > * {
-  margin: 0px 10px;
-}
-
-.input-field > .files > .file > div > .file-upload {
-  max-width: 50px;
-  max-height: 50px;
-  border-radius: 5px;
-}
-
-.input-field > .files > .file > div > .info {
+  background-color: #bdc3c7;
   color: #ffffff;
-  font-weight: 600;
-}
-
-.input-field > .files > .file > div > .info > .name {
-  max-width: 40px;
+  height: 32px;
+  border-radius: 5px;
+  margin-right: 5px;
+} .input-field > .input > .files > .file > .info {
+  margin: 0px 5px;
+} .input-field > .input > .files > .file > .name {
+  margin: 0px 10px;
+  max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 15px;
-}
-
-.input-field > .files > .file > div > .info > .size {
-  font-size: 8px; 
-}
-
-.input-field > .files > .file > div > .close {
-  height: 8px;
+  cursor: default;
+} .input-field > .input > .files > .file > .info > .size {
+  font-size: 8px;
+  cursor: default;
+} .input-field > .input > .files > .file > .percent {
+  margin: 0px 5px;
+} .input-field > .input > .files > .file > .close {
+  height: 10px;
   margin: 0px 10px;
   cursor: pointer;
-}
-
-.input-field > .files > .file > div > .close:hover {
+  filter: invert(100%) sepia(79%) saturate(100%) hue-rotate(86deg) brightness(118%) contrast(119%);
+} .input-field > .input > .files > .file > .close:hover {
   height: 10px;
-  margin: 0px 9px;
-  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
-}
-
-.input-field > .files:empty:hover {
-  border: 1px dashed #95a5a6;
-}
-
-.input-field > .files:empty::before {
-  content: attr(div-placeholder);
-  font-size: 20px;
-  opacity: 0.3;
-  line-height: 48px;
-}
-
-@media only screen and (min-width: 761px) {
-  .input-field > div {
-    width: calc(80% - 10px);
-    height: calc(100% - 2px);
-  }
-}
-
-@media only screen and (max-width: 760px) {
-  .input-field > div {
-    width: calc(90% - 10px);
-    height: calc(100% - 2px);
-  }
+  filter: invert(100%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
+} .input-field > .input > .upload {
+  background-color: #ecf0f1;
+  width: 25px;
+  height: 15px;
+  cursor: pointer;
+} .input-field > .input > .upload:hover {
+  opacity: 0.6;
+} .input-field > .input > .upload.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

@@ -1,49 +1,48 @@
 <template>
-  <div class="field-form" v-if="mode == 'form'">
+  <div class="field-form">
     <div class="label-field">
       <label>{{ label }}</label>
     </div>
     <div class="input-field">
-      <div
-        class="files"
-        v-this="(el) => setElement(el, 'files')"
-        v-drag:content="onDrag"
-        div-placeholder="Choose a file or drag it here"
-      >
-        <div 
-          class="file"
-          v-for="(file, index) in _value_"
-          :key="index"
-        >
-          <div>
-            <img class="file-upload" :src="file.data.src" :alt="file.name">
-          </div>
-          <div>
-            <div class="info">
-              <div class="name">{{ file.name }}</div>
-              <div class="size">{{ file.size.src.b }}</div>
-            </div>
-          </div>
-          <div>
-            <img class="close" :src="$app.data.base64.close.data" :alt="$app.data.base64.close.name" @click="(event) => remove(event, index)">
+      <div class="input">
+        <div class="files">
+          <div 
+            class="file" 
+            v-for="(file, index) in input.value"
+            :key="index"
+          >
+            <div class="name">{{ file.name }}</div>
+            <div class="percent">{{ file.percent ? file.percent.text : '' }}</div>
+            <img 
+              v-if="mode == 'form'"
+              class="close" 
+              :src="$app.db.base64.value.close.src" 
+              :alt="$app.db.base64.value.close.name" 
+              @click="(event) => removeFile(event, index)"
+            >
           </div>
         </div>
-      </div>
-      <input
-        v-this="(el) => setElement(el, 'input')"
-        v-show="false"
-        @change="(event) => setFilesAsync(event)"
-        type="file"
-        :multiple="_shared_.multiple"
-        :accept="_shared_.accept"
-      >
-    </div>
-  </div>
+        
+        <input
+          type="file"
+          v-this="(el) => setElement(el, 'input')"
+          v-show="false"
+          @change="inputFileChange"
+          :multiple="input.rules.multiple"
+          :accept="input.rules.accept"
+          :disabled="input.progress"
+        >
 
-  <div class="field-view" v-else>
-    <!-- <input type="text"> -->
+        <img 
+          :class="uploadClass"
+          v-if="mode == 'form'"
+          @click="inputFilesClick"
+          :src="$app.db.base64.value.upload.src"
+        >
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="js" src="./file.js"></script>
-<style lang="css" src="./file.css"></style>
+<style lang="css" src="./file.css" scoped></style>

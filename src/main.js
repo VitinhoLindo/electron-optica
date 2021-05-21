@@ -2,14 +2,14 @@ import { createApp } from 'vue'
 import App from './App/app.vue'
 
 import Components from './components/index'
-import Util from './util/index'
+import { Load } from './util/index'
 import Directives from './directives/index'
 
 const load = async function () {
   const main = createApp(App)
   
   Components(main)
-  await Util(main)
+  await Load(main)
   Directives(main)
 
   // main.directive

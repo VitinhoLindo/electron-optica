@@ -1,29 +1,17 @@
-import Util from './Util'
-import CustomFileReader from './File'
-import Data from './data.json'
-import BinaryInfo from './BinaryInfo'
-
-const Main = function () {
-  class Base extends Util() {
-    constructor() {
-      super()
-
-      this.data = Data
-    }
-
-    fileReader() {
-      return new CustomFileReader(this)
-    }
-
-    binaryInfo() {
-      return new BinaryInfo()
-    }
+import Convert from './Convert'
+import CustomFileReader from './custom/File'
+export class Base extends Convert {
+  constructor() {
+    super()
   }
 
+  fileReader() { return new CustomFileReader(this) }
+}
+
+const Main = async function () {
   return new Base()
 }
 
-
-export default async function(vue) {
-  vue.config.globalProperties.$app = Main()
+export async function Load(vue) {
+  vue.config.globalProperties.$app = await Main()
 }

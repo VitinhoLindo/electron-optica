@@ -5,6 +5,7 @@
       :key="index"
       :label="field.label"
       :value="field.value"
+      :shared="field.shared"
       :mode="viewMode"
       :getter="(getter) => set(getter, index)"
       :is="field.name"

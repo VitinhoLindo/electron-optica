@@ -15,131 +15,122 @@ export default {
   },
   data() {
     return {
-      _value_: [],
-      _shared_: {
-        multiple: false,
-        accept: '*'
-      },
-      input: null
+      input: {
+        el: null,
+        value: [],
+        rules: { multiple: true, accept: '*' },
+        class: { init: ['upload'], append: [] },
+        progress: false
+      }
     }
   },
   methods: {
-    onDrag({ event, type }) {
-      switch (type) {
-        case 'drag-over':
-          event.preventDefault(); break;     
-        case 'drag-drop':
-        case 'drag-enter':
-        case 'drag-leave': 
-        default: break;
-      }
-    },
-
-    setElement(el, name) {
-      switch (name) {
-        case 'input': break;
-        case 'files': break;
-        default: console.warn(`setElement: don\'t defined name ${name}`); break;
-      }
-    },
-
     load() {
-      this.setValue()
       let { multiple, accept } = this.shared || {}
-      this._shared_ = {
+
+      this.input.rules = {
         multiple: multiple || true,
-        accept: accept || '*'
+        accept: accept || 'image/*'
       }
     },
 
-    async setValue() {
-      let files = []
-
-      if (typeof this.value === 'object' && !(this.value instanceof Array))
-        files.push(this.value)
-      else if (typeof this.value === 'object' && this.value instanceof Array)
-        files = files.concat(this.value)
-      
-      for(let index in files) {
-        files[index] = this.set(files[index])
+    setElement(element, type) {
+      switch (type) {
+        case 'input': this.input.el = element; break;
       }
-
-      this._value_ = await Promise.all(files)
     },
 
-    build() { },
-    
-    remove(event, index) {
-      this._value_.splice(index, 1);
+    uploadButtonClass(type, value) {
+      let index = this.input.class.append.indexOf(value)
+
+      if (type == 'set') 
+        this.input.class.append.push(value)
+      if (type == 'unset') {
+        if (index < 0) return
+        this.input.class.append.splice(index, 1)
+      }
     },
 
-    async dropEnterFile() {
-
+    progressUpload(bool) {
+      this.input.progress = bool
+      this.uploadButtonClass(bool ? 'set': 'unset', 'disabled')
     },
 
-    async setFilesAsync(event = new Event()) {
-      let files  = event.target.files
-      if (files === null) { return }      
-      let fileReader = this.$app.fileReader()
+    async inputFileChange(event = new Event()) {
+      this.progressUpload(true)
+      let values = event.target.files,
+        files = []
 
-      fileReader.on('success', (data) => { this._value_.push(data) })
-      fileReader.on('error', function(data) { console.error('error in read file: ', data.name) })
+      for(let file of (values || []))
+        files.push(file)
 
-      fileReader.readFiles(files)
+      await this.addFiles(files)
+      this.progressUpload(false)
       event.target.files = null
     },
 
-    async inputClick(event = new MouseEvent()) {
-      event.preventDefault()
+    getFileIndex(name, type) {
+      for(let index in this.input.value) {
+        let file = this.input.value[index]
 
-      if (this.input.el == null) for(let x = 0; x < 2; x++) {
-        if (this.input.el != null) break
-        this.input.el = await this.getElement(this.input.id)
+        if (file.name == name && file.type == type) return index
       }
-
-      if (this.input.el != null) this.input.el.click()
+      return -1
     },
 
-    async set(file) {
+    getFile(name, type) {
+      let index = this.getFileIndex()
+
+      if (index < 0) return null
+      else           return this.input.value[index]
+    },
+
+    setFile(file) {
+      let index = this.getFileIndex(file.name, file.type)
+
+      if (index >= 0) this.input.value.splice(index, 1)
+      this.input.value.push(file)
+    },
+
+    listenFileChange({ event, type, file, error }) {
+      switch (type) {
+        case 'end':
+        case 'progress': this.setFile(file); break;
+        default:                             break;
+      }
+    },
+
+    async addFiles(files) {
       let fileReader = this.$app.fileReader()
 
-      return {
-        name: file.name,
-        type: file.type,
-        size: {
-          value: file.size,
-          src: {
-            b: fileReader.binaryInfo.format(file.size, { unit: 'b' }),
-            mb: fileReader.binaryInfo.format(file.size, { unit: 'mb' }),
-            gb: fileReader.binaryInfo.format(file.size, { unit: 'gb' })
-          }
-        },
-        modified: file.modified,
-        data: {
-          format: file.data.format,
-          value: file.data.value,
-          src: fileReader.getSrc({ buffer: this.$app.toBuffer(file.data.value, file.data.format), mime: file.type })
-        }
-      }
+      fileReader.listen(this.listenFileChange)
+      await fileReader.readFiles(files, { encoding: 'hex', src: false })
     },
 
-    get() { 
-      let files = this._value_.map(function (file, index, array) {
-        return {
-          name: file.name,
-          size: file.size.value,
-          type: file.type,
-          modified: file.lastModified,
-          data: {
-            format: file.data.format,
-            value: file.data.value
-          }
-        }
-      }), len = files.length
+    inputFilesClick(event = new MouseEvent()) {
+      if (this.input.el == null) return
+      this.input.el.click()
+    },
 
-      if (len == 1)     return files[0]
-      else if (len > 1) return files
-      else              return null
+    removeFile(event, index) {
+      this.input.value.splice(index, 1)
+    },
+
+    set() {
+      if (this.value === null) return
+      this.input.value = (typeof this.value === 'object' && this.value instanceof Array) ?
+        this.value:
+        [this.value]
+    },
+
+    get() {
+      return this.input.value
+    }
+  },
+  computed: {
+    uploadClass() {
+      let { init, append } = this.input.class
+      return init.concat(append)
     }
   }
 }
