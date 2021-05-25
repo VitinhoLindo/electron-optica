@@ -3,7 +3,7 @@ export default {
     let rules = [
       { func: 'get', call: 'getters' },
       { func: 'load', call: 'load' },
-      { func: 'set', call: 'set' },
+      { func: 'set', call: 'set' }
     ]
 
     this.init(rules)

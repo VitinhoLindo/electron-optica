@@ -25,6 +25,13 @@ export default {
           field: 'file',
           value: null,
           shared: {}
+        },
+        {
+          name: 'date-field',
+          label: 'Data Nascimento',
+          field: 'birth_date',
+          value: null,
+          shared: {}
         }
       ],
       getters: {}

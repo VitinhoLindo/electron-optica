@@ -1,6 +1,55 @@
 :root {
   --file-bg: #ecf0f1;
   --border-bg: #34495e;
+  --app-border: 5px;
+}
+
+.arrow-up {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent transparent rgba(0,0,0, 1) transparent;
+} .arrow-up.b5 {
+  border-width: 0 5px 5px 5px;
+} .arrow-up.b10 {
+  border-width: 0 10px 10px 10px;
+} .arrow-up:hover {
+  border-color: transparent transparent rgba(0,0,0, 0.6) transparent;
+} .arrow-left {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent rgba(0,0,0, 1) transparent transparent;
+  cursor: pointer;
+} .arrow-left.b5 {
+  border-width: 5px 5px 5px 0px;
+} .arrow-left.b10 {
+  border-width: 10px 10px 10px 0px;
+} .arrow-left:hover {
+  border-color: transparent rgba(0,0,0,0.5) transparent transparent;
+} .arrow-right {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent transparent transparent rgba(0,0,0, 1);
+  cursor: pointer;
+} .arrow-right.b5 {
+  border-width: 5px 0px 5px 5px;
+} .arrow-right.b10 {
+  border-width: 10px 0px 10px 10px;
+} .arrow-right:hover {
+  border-color: transparent transparent transparent rgba(0,0,0, 0.6);
+} .arrow-down {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: rgba(0,0,0, 1) transparent transparent transparent;
+} .arrow-down.b5 {
+  border-width: 5px 5px 0 5px;
+} .arrow-down.b10 {
+  border-width: 10px 10px 0 10px;
+} .arrow-down:hover {
+  border-color: rgba(0,0,0, 0.6) transparent transparent transparent;
 }
 
 @import "./mobile_field.css" (max-width: 760px);
