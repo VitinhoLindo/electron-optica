@@ -49,7 +49,7 @@ export default {
     submit(event) {
       this.$emit('listen', { 
         type: 'submit',
-        value: new Date(this.get())
+        value: this.input
       })
     }
   },

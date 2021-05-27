@@ -48,7 +48,15 @@ export default {
     },
     
     pickerListen(args = { type: String, value: Date }) {
-      this.protected.value = args.value
+      let {
+        type,
+        value
+      } = args
+
+      if (type === 'cancel') { } 
+      else if (type === 'submit') {
+        this.protected.value = value
+      }
       this.calendarClick(null)
     }
   },
