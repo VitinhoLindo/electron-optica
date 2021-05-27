@@ -95,6 +95,7 @@ export default {
     listenFileChange({ event, type, file, error }) {
       switch (type) {
         case 'end':
+          console.log(JSON.stringify(file))
         case 'progress': this.setFile(file); break;
         default:                             break;
       }
@@ -104,7 +105,7 @@ export default {
       let fileReader = this.$app.fileReader()
 
       fileReader.listen(this.listenFileChange)
-      await fileReader.readFiles(files, { encoding: 'hex', src: false })
+      await fileReader.readFiles(files, { encoding: 'hex', src: true })
     },
 
     inputFilesClick(event = new MouseEvent()) {

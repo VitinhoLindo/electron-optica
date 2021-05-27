@@ -32,6 +32,13 @@ export default {
           field: 'birth_date',
           value: null,
           shared: {}
+        },
+        {
+          name: 'time-field',
+          label: 'Hora Admissão',
+          field: 'admission_hour',
+          value: null,
+          shared: {}
         }
       ],
       getters: {}

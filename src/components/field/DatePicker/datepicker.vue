@@ -64,7 +64,10 @@
 
         <div class="footer">
           <button id="date-picker-cancel" @click="(event) => cancel(event)">{{ labels.button.cancel }}</button>
-          <button @click="(event) => submit(event)">{{ labels.button.confirm }}</button>
+          <button 
+            @click="(event) => submit(event)"
+          >{{ labels.button.confirm }}
+          </button>
         </div>
       </div>
     </div>

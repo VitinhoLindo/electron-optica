@@ -1,3 +1,19 @@
+/**
+  localeMatcher?: "best fit" | "lookup";
+  weekday?: "long" | "short" | "narrow";
+  era?: "long" | "short" | "narrow";
+  year?: "numeric" | "2-digit";
+  month?: "numeric" | "2-digit" | "long" | "short" | "narrow";
+  day?: "numeric" | "2-digit";
+  hour?: "numeric" | "2-digit";
+  minute?: "numeric" | "2-digit";
+  second?: "numeric" | "2-digit";
+  timeZoneName?: "long" | "short";
+  formatMatcher?: "best fit" | "basic";
+  hour12?: boolean;
+  timeZone?: string;
+*/
+
 export default {
   props: {
     label: {
@@ -28,6 +44,110 @@ export default {
     }
   },
   methods: {
+    setSumAndSub(modify = 'lower', date = new Date(), setAndGet = [], value = 0) {
+      let [ set, get ] = setAndGet
+
+      if (!set || !get || !date[set] || !date[get]) return date
+      switch (modify) {
+        case 'lower': date[set](date[get]() - value); break;
+        case 'upper': date[set](date[get]() + value); break;
+        default:
+          break;
+      }
+
+      return date
+    },
+
+    createDateUsingUTC(...args) {
+      let date = new Date()
+      let [
+        year = date.getUTCFullYear(), 
+        month = date.getUTCMonth() + 1, 
+        day = date.getUTCDate(), 
+        hour = date.getHours(), 
+        minute = date.getMinutes(), 
+        second = date.getSeconds()
+      ] = args
+
+      return new Date(Date.UTC(year, month - 1, day, hour, minute, second))
+    },
+
+    getFormat(rules, dateTimeObject) {
+      let {
+        // pt-br, en-us
+        lang = 'pt-br',
+        // date, time, date-time, utc
+        format = 'date',
+        rule = {}
+      } = rules || {},
+      {
+        modify = 'lower',
+        year = 0,
+        month = 0,
+        day = 0
+      } = rule
+
+      if (
+        !dateTimeObject.year && 
+        !dateTimeObject.month && 
+        !dateTimeObject.day && 
+        !dateTimeObject.hour && 
+        !dateTimeObject.minute &&
+        !dateTimeObject.second
+      ) dateTimeObject = this.currentDateObject()
+      let date = this.createDateUsingUTC(
+        dateTimeObject.year, 
+        dateTimeObject.month, 
+        dateTimeObject.day, 
+        dateTimeObject.hour,
+        dateTimeObject.minute,
+        dateTimeObject.second
+      )
+
+      date = this.setSumAndSub(modify, date, ['setFullYear', 'getFullYear'], year)
+      date = this.setSumAndSub(modify, date, ['setMonth', 'getMonth'], month)
+      date = this.setSumAndSub(modify, date, ['setDate', 'getDate'], day)
+
+      lang = (
+        typeof lang == 'string' && 
+        ['en-us', 'pt-br'].indexOf(lang.toLowerCase()) >= 0
+      ) ? lang.toLowerCase() : 'pt-br'
+    
+      switch (format) {
+        case 'time': return date.toLocaleTimeString(lang, { timeZone: 'UTC' })
+        case 'date': return date.toLocaleDateString(lang, { timeZone: 'UTC' })
+        case 'utc':
+        default:     return date.toJSON()
+      }
+    },
+
+    dateStringToObject(date = new Date()) {
+      switch (typeof date) {
+        case 'object':
+          if (!(date instanceof Date)) date = new Date()
+          break;
+        case 'string':
+          if (/[0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}\:[0-9]{2}\:[0-9]{2}/g.test(date)) {
+            date = new Date(date); break;
+          }
+        default:
+          date = new Date(); break;
+      }
+
+      let [ day, month, year, hour, minute, second ] = date.toLocaleString('pt-br').split(' ').map(function (value) {
+        return value.split(/\/|\-|\:/g).map(function (_value_) { return parseInt(_value_); })
+      }).flat(Infinity)
+
+      return {
+        date: { year, month, day },
+        time: { hour,  minute, second }
+      }
+    },
+
+    /**
+     * @end
+     */
+
     generateYearsArray(initial, final) {
       let years = []
       for(let x = initial; x <= final; x++) years.push(x)
@@ -218,63 +338,32 @@ export default {
       }
     },
 
-    arrayDateFormat(...args) {
-      let [y, m, d] = args,
-          values = [y, m, d]
-
-      for(let index in values) {
-        if (index == 0) values[index] = `000${args[index]}`.slice(-4)
-        else            values[index] = `000${args[index]}`.slice(-2)
+    currentTimeObject(date = new Date()) {
+      return {
+        hour: date.getHours(),
+        minute: date.getMinutes(),
+        second: date.getSeconds()
       }
+    },
 
-      return values
+    arrayTimeFormat(...args) {
+      return args.map(function (value) { return `000${value}`.slice(-2) } )
     },
 
     inputDate() {
-      let [ year, month, day ]= this.arrayDateFormat(this.input.year, this.input.month, this.input.day)
-
-      return new Date(
-        this.getFormat({
-          format: 'en',
-          rule: {  }
-        }, { year, month, day })
-      )
+      return this.getFormat({
+        lang: this.$app.$lang(),
+        format: 'utc',
+        rule: {  }
+      }, { year: this.input.year, month: this.input.month, day: this.input.day })
     },
 
-    setSumAndSub(modify, first = 0, second = 0) {
-      let exec = '';
-
-      if (modify == 'lower')      exec = `${first} - ${second}`
-      else if (modify == 'upper') exec = `${first} + ${second}`
-      else                        exec = `${first}`
-
-      return eval(exec)
-    },
-
-    getFormat(rules, dateObject) {
-      let { 
-        format = 'pt-br',
-        rule = {}
-      } = rules || {},
-      {
-        modify = 'lower',
-        year = 0,
-        month = 0,
-        day = 0
-      } = rule
-      dateObject = dateObject || this.currentDateObject()
-
-      if (modify) {
-        if (typeof dateObject.year === 'number')  dateObject.year  = this.setSumAndSub(modify, dateObject.year, year)
-        if (typeof dateObject.month === 'number') dateObject.month = this.setSumAndSub(modify, dateObject.month, month)
-        if (typeof dateObject.day === 'number')   dateObject.day   = this.setSumAndSub(modify, dateObject.day, day)
-      }
-
-      switch (format) {
-        case 'pt-br': return this.arrayDateFormat(dateObject.year, dateObject.month, dateObject.day).reverse().join('/')
-        case 'en':
-        default:      return this.arrayDateFormat(dateObject.year, dateObject.month, dateObject.day).join('-')
-      }
+    inputTime() {
+      return this.getFormat({
+        lang: this.$app.$lang(),
+        format: 'utc',
+        rule: {  }
+      }, { year: this.input.year, month: this.input.month, day: this.input.day, hour: this.input.hour, minute: this.input.minute, second: this.input.second })
     },
 
     getGMTObject(date = new Date()) {
@@ -302,7 +391,10 @@ export default {
 
       if (day) {
         _class.push('exists')
+      } else {
+        return _class
       }
+
       if (day == this.day) {
         _class.push('current')
       } 
@@ -389,36 +481,8 @@ export default {
       }
       
       this.day = value
-      this.submit(event)
-    },
-
-    set() {
-      if (this.value === null) this.input = this.currentDateObject()
-      else                     this.input = this.currentDateObject(new Date(this.value))
-
-      this.controller.years.index = this.searchValueInArray(this.controller.years.value, this.input.year, this.controller.years.range)
-    },
-
-    get() {
-      return this.inputDate()
-    },
-
-    cancel(event = new MouseEvent()) {
-      let id = event.target.id
-
-      if (id == 'date-picker-cancel' || id == 'date-picker-body') {
-        this.$emit('listen', { 
-          type: 'cancel',
-          value: this.input
-        })
-      }
-    },
-
-    submit(event) {
-      this.$emit('listen', { 
-        type: 'submit',
-        value: this.input
-      })
+      if (typeof this.submit === 'function')
+        this.submit(event)
     }
   },
   computed: {
@@ -510,16 +574,15 @@ export default {
           return this.year
         case 'day':
           let { MM, YY } = this.getGMTObject(
-            this.get()
+            new Date(this.get())
           )
           return `${this.getGMTLang(MM, 'pt-br')} ${YY}`
       }
     },
 
     getGMTFormatString() {
-      let {M, MM, YY} = this.getGMTObject(
-        this.get()
-      )
+      let values = this.get()
+      let {M, MM, YY} = this.getGMTObject(new Date(values))
 
       return `${M}, ${MM} ${YY}`
     }

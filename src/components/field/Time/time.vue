@@ -13,23 +13,23 @@
     </div>
 
     <div class="input-field" v-if="mode == 'form'">
-      <div class="date-picker">
-        <div>{{ dateView }}</div>
+      <div class="time-picker">
+        <div>{{ timeView }}</div>
         <div>
           <img 
-            :src="$app.db.base64.value.calendar.src" 
-            :alt="$app.db.base64.value.calendar.name"
             @click="calendarClick"
+            :src="$app.db.base64.value.clock.src"
+            :alt="$app.db.base64.value.clock.name"
           >
         </div>
       </div>
     </div>
 
     <div class="input-field" v-else>
-      <div>{{ value ? dateView: '' }}</div>
+      <div class="input-value">{{ value || '' }}</div>
     </div>
   </div>
 </template>
 
-<script lang="js" src="./date.js"></script>
-<style lang="css" src="./date.css" scoped></style>
+<script lang="js" src="./time.js"></script>
+<style lang="css" src="./time.css"></style>

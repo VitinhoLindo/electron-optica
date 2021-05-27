@@ -2,7 +2,7 @@ import FieldMixin from '../../mixins/js/field_mixin'
 import CalendarMixin from '../../mixins/js/calendar_mixin'
 
 export default {
-  name: 'text-field',
+  name: 'time-field',
   mixins: [FieldMixin, CalendarMixin],
   props: {
     value: {
@@ -16,16 +16,12 @@ export default {
   },
   data() {
     return {
-      protected: {
-        value: {
-          day: 0,
-          month: 0,
-          year: 0
-        }
-      },
       controller: {
         picker: false,
-        component: 'date-picker-field'
+        component: 'time-picker-field'
+      },
+      protected: {
+        value: {}
       }
     }
   },
@@ -34,31 +30,41 @@ export default {
     calendarClick(event) {
       this.controller.picker = !this.controller.picker
     },
-    
+
     set() {
-      let value = this.dateStringToObject(this.value)
-      this.protected.value = value.date
+      let value = this.dateStringToObject(this.value ? new Date(this.value): new Date())
+      this.protected.value = value.time
     },
 
     get() {
       return this.getFormat({
         lang: this.$app.$lang(),
-        format: 'utc'
+        format: 'utc',
       }, this.protected.value)
     },
-    
-    pickerListen(args = { type: String, value: Date }) {
-      this.protected.value = args.value
-      this.calendarClick(null)
+
+    pickerListen(args = { type: String, value: {} }) {
+      let {
+        type = 'cancel',
+        value = null
+      } = args
+
+      if (type === 'cancel') {}
+      else if (type === 'submit') {
+        this.protected.value = value
+      }
+      return this.calendarClick(null)
     }
   },
   computed: {
-    dateView: {
+    timeView: {
       get() {
         return this.getFormat({
           lang: this.$app.$lang(),
-          format: 'date'
+          format: 'time',
+          rule: {  }
         }, this.protected.value)
+
       }
     }
   }

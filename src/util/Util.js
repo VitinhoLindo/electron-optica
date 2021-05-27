@@ -35,4 +35,8 @@ export default class Util extends Properties {
       }, time)
     })
   }
+
+  $lang() {
+    return window.navigator.browserLanguage || window.navigator.language || 'pt-BR';
+  }
 }
